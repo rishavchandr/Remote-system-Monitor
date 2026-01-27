@@ -1,0 +1,10 @@
+workflows:
+   sys-report-workflows:
+      name: system-pipeline
+      scripts: 
+         - name: CICD started
+           scripts: echo "welcome to your CICD"
+      publishing:
+        email:
+          recepients: 
+             - darkspace3102@gmail.com
