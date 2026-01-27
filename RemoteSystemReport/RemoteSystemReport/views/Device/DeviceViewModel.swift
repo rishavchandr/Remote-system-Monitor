@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 @MainActor
 final class DeviceViewModel: ObservableObject {
@@ -14,9 +15,9 @@ final class DeviceViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var newDevice: Device?
     @Published var isRegisteringCompletion = false
+    @Published var errorMessageForRegistration: String?
     
     @Published var isLoading = false
-    
     func fetchDevices(){
         isLoading = true
         
@@ -52,9 +53,27 @@ final class DeviceViewModel: ObservableObject {
                             self.isRegisteringCompletion = true
                         }
                     case .failure(let error):
-                        self.errorMessage = error.localizedDescription
+                        self.errorMessageForRegistration = error.localizedDescription
                     }
                 }
+        }
+    }
+    
+    func deleteDevices(at offsets: IndexSet){
+        guard let index = offsets.first else {return}
+        let deviceId = devices[index].id
+        print("Attempting to delete device with ID: \(deviceId)")
+        ApiClient.shared.request(
+            path: "/remove/device/\(deviceId)",
+            method: "DELETE") { (result: Result<DefaultResponse,Error>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.devices.remove(atOffsets: offsets)
+                case .failure(let error):
+                    self.errorMessage = error.localizedDescription
+                }
+            }
         }
     }
     

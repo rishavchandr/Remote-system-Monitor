@@ -28,6 +28,6 @@ struct UserResponse: Codable {
     let data: User
 }
 
-struct logOutResponse: Codable {
+struct DefaultResponse: Codable {
     
 }

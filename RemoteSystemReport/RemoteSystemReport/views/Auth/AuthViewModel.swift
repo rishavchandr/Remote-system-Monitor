@@ -77,16 +77,15 @@ final class AuthViewModel: ObservableObject {
     }
     
     func logOutUser(){
-        ApiClient.shared.request(path: "/user/auth/logout",method: "POST") { (result:Result<logOutResponse, any Error>) in
+        ApiClient.shared.request(path: "/user/auth/logout",method: "POST") { (result:Result<DefaultResponse, any Error>) in
             DispatchQueue.main.async {
                 self.isAuthenticated = false
                 TokenStore.shared.jwt = nil
                 self.email = ""
                 self.password = ""
                 switch result {
-                case .success(let response):
+                case .success(_):
                     self.user = nil
-                    print(response)
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
                 }

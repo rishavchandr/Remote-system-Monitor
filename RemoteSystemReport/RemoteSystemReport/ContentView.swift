@@ -13,7 +13,7 @@ struct ContentView: View {
     var body: some View {
         Group {
             if vm.isAuthenticated {
-                DeviceListView(authVm: vm)
+                DeviceListView(onLogout: {vm.logOutUser()})
             }else{
                 LoginView(vm: vm)
             }
@@ -26,3 +26,12 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
+
+//Instruction before running
+/*
+ -> go project
+ -> go to build settings of both target and project
+ -> go to user-defined values
+ -> change your domain for the local environment and prod environment
+ */

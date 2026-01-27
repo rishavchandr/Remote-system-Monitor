@@ -12,7 +12,7 @@ final class ApiClient {
     static let shared = ApiClient()
     private init() {}
     
-    private let baseURL = "http://localhost:8000/api/v1"
+    private let baseurl = EnvironmentSetup.baseUrl
     
     func request<T: Decodable>(
         path: String,
@@ -22,7 +22,7 @@ final class ApiClient {
         completion: @escaping(Result<T,Error>) -> Void
     ){
         
-        var component = URLComponents(string: baseURL + path)!
+        var component = URLComponents(string: baseurl + path)!
         component.queryItems = query
         
         var request = URLRequest(url: component.url!)

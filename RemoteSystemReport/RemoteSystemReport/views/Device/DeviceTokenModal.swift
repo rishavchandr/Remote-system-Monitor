@@ -10,58 +10,83 @@ import SwiftUI
 struct DeviceTokenModal: View {
     let token: String
     @Environment(\.dismiss) var dismiss
+    @State private var copied = false
+    
     var body: some View {
-        NavigationStack{
-            
-            VStack{
-                
-                VStack(alignment: .leading , spacing: 12){
-                    Text("Device Token")
-                        .font(.caption.bold())
-                        .foregroundStyle(.secondary)
-                    
-                    HStack {
-                        Text(token)
-                            .font(.system(.body, design: .monospaced))
-                            .font(.system(size: 20))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
+        NavigationStack {
+            ZStack {
+                Color(hex: "1a1a1a").ignoresSafeArea()
+                VStack(spacing: 24) {
+                    VStack(spacing: 8) {
+                        Image(systemName: "cpu.fill")
+                            .font(.system(size: 40))
+                            .foregroundStyle(.blue.gradient)
                         
-                        Spacer()
+                        Text("Registration Successful")
+                            .font(.headline)
+                            .foregroundColor(.white)
                         
-                        Button {
-                            UIPasteboard.general.string = token
-                        } label: {
-                            Image(systemName: "doc.on.doc.fill")
-                                .foregroundColor(.blue)
-                        }
+                        Text("Copy this token to your Agent's config file to start monitoring.")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 20)
                     }
+                    .padding(.top, 10)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("DEVICE TOKEN")
+                            .font(.system(size: 10, weight: .black))
+                            .foregroundColor(.blue.opacity(0.8))
+                            .tracking(2)
+                        
+                        HStack {
+                            Text(token)
+                                .font(.system(.body, design: .monospaced))
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
+                            
+                            Spacer()
+                            
+                            Button {
+                                UIPasteboard.general.string = token
+                                withAnimation(.spring()) {
+                                    copied = true
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                    withAnimation { copied = false }
+                                }
+                            } label: {
+                                Image(systemName: copied ? "checkmark.circle.fill" : "doc.on.doc.fill")
+                                    .foregroundColor(copied ? .green : .blue)
+                                    .contentTransition(.symbolEffect(.replace))
+                            }
+                        }
+                        .padding()
+                        .background(Color.white.opacity(0.05))
+                        .cornerRadius(12)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(LinearGradient(colors: [.blue.opacity(0.5), .clear], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1)
+                        )
+                    }
+                    .padding(.horizontal)
+                    
+                    Spacer()
                 }
-                .padding()
-                .background(Color(.tertiarySystemBackground))
-                .cornerRadius(10)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.green , lineWidth: 1)
-                )
+                .padding(.top, 20)
             }
-            .padding()
-            .background(Color(.secondarySystemBackground))
-            .cornerRadius(16)
-            .padding(.horizontal)
-            
-            
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Close") { dismiss() }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+                }
             }
         }
         .preferredColorScheme(.dark)
     }
-}
-
-#Preview {
-    DeviceTokenModal(token: "")
 }
