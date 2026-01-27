@@ -6,3 +6,13 @@
 //
 
 import Foundation
+
+enum EnvironmentSetup {
+    static let baseUrl: String = {
+        guard let path = Bundle.main.object(
+            forInfoDictionaryKey: "API_BASE_URL") as? String else{
+            preconditionFailure("API_URL_NOT_FIND")
+            }
+        return path
+    }()
+}

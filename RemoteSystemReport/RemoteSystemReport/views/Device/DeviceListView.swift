@@ -12,7 +12,7 @@ struct DeviceListView: View {
     @State private var showAddDevice = false
     @State private var showAlertofLimitReached = false
     @StateObject private var vm = DeviceViewModel()
-    @ObservedObject var authVm: AuthViewModel
+    let onLogout: () -> Void
     
     var body: some View {
         NavigationStack {
@@ -32,15 +32,30 @@ struct DeviceListView: View {
                     }
                 }else{
                  
-                    ScrollView{
-                        VStack(spacing: 10) {
-                            ForEach(vm.devices) { device in
+                    List{
+                        ForEach(vm.devices) { device in
+                            ZStack{
                                 NavigationLink(destination: MetricView(deviceId: device.id)) {
-                                    DeviceCardView(device: device)
+                                    EmptyView()
                                 }
+                                .opacity(0)
+                                DeviceCardView(device: device)
+                            }
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    if let index = vm.devices.firstIndex(where: { $0.id == device.id }) {
+                                        vm.deleteDevices(at: IndexSet(integer: index))
+                                    }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                
                             }
                         }
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                     }
+                    .listStyle(.plain)
                     .refreshable {
                         vm.fetchDevices()
                     }
@@ -101,7 +116,7 @@ struct DeviceListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        authVm.logOutUser()
+                        onLogout()
                     } label: {
                         HStack(spacing: 4) {
                             Text("Logout")
@@ -122,7 +137,7 @@ struct DeviceListView: View {
 }
 
 #Preview {
-    DeviceListView(authVm: AuthViewModel())
+    DeviceListView(onLogout: {})
         
 }
 

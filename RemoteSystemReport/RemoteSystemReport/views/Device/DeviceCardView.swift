@@ -25,7 +25,7 @@ struct DeviceCardView: View {
                         .font(.system(.title3 ,design: .monospaced))
                         .fontWeight(.bold)
                         .lineLimit(1)
-                }
+                 }
                 
                 Spacer()
                 
