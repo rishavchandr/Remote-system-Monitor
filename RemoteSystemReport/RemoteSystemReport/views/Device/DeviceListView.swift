@@ -31,7 +31,7 @@ struct DeviceListView: View {
                             .foregroundStyle(Color(.secondaryLabel))
                     }
                 }else{
-                 
+                    
                     List{
                         ForEach(vm.devices) { device in
                             ZStack{
@@ -57,7 +57,7 @@ struct DeviceListView: View {
                     }
                     .listStyle(.plain)
                     .refreshable {
-                        vm.fetchDevices()
+                        await vm.fetchDeviceAsync()
                     }
                 }
                 

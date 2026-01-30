@@ -12,7 +12,8 @@ export const CONFIG = {
 
     features: {
         temperature: process.env.METRIC_TEMPRATURE,
-        network: process.env.METRIC_NETWORK
+        network: process.env.METRIC_NETWORK,
+        docker: process.env.METRIC_DOCKER
     },
 
     agent: {

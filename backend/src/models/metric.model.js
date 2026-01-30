@@ -23,6 +23,11 @@ const metricSchema = new mongoose.Schema({
         total: Number
     },
 
+    battery: {
+        isCharging: Boolean,
+        cycleCount: Number
+    },
+
     //dynamic metrics
     extras: {
         type: mongoose.Schema.Types.Mixed,

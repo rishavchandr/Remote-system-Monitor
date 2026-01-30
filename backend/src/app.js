@@ -7,9 +7,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
     origin: process.env.CROS_ORIGIN,
-    credentials: true,
-    methods: ['GET','POST','PUT','DELETE'],
-    allowedHeaders: ['Content-Type','Authorization']
 }))
 
 app.get('/api/v1/health' , (req,res) =>{

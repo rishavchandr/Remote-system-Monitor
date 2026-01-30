@@ -62,7 +62,6 @@ final class DeviceViewModel: ObservableObject {
     func deleteDevices(at offsets: IndexSet){
         guard let index = offsets.first else {return}
         let deviceId = devices[index].id
-        print("Attempting to delete device with ID: \(deviceId)")
         ApiClient.shared.request(
             path: "/remove/device/\(deviceId)",
             method: "DELETE") { (result: Result<DefaultResponse,Error>) in
@@ -73,6 +72,16 @@ final class DeviceViewModel: ObservableObject {
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
                 }
+            }
+        }
+    }
+    
+    
+    func fetchDeviceAsync() async {
+        return await withCheckedContinuation { continuation in
+            fetchDevices()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0){
+                continuation.resume()
             }
         }
     }

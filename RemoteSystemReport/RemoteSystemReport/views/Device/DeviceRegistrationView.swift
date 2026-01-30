@@ -35,6 +35,9 @@ struct DeviceRegistrationView: View {
             }
         }
         .preferredColorScheme(.dark)
+        .onDisappear {
+            vm.fetchDevices()
+        }
     }
     
     @ViewBuilder

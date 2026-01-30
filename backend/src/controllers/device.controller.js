@@ -3,6 +3,7 @@ import {Device} from '../models/device.model.js'
 import {asyncHandler} from '../utils/asyncHandler.js'
 import {ApiError} from '../utils/ApiError.js'
 import {ApiResponse} from '../utils/ApiResponse.js'
+import { removeMetrics } from './metric.controller.js'
 
 
 export const registerDevice = asyncHandler( async (req,res) =>{
@@ -33,7 +34,7 @@ export const removeDevice = asyncHandler(async(req,res)=>{
 
     const {deviceId} = req.params;
 
-    const device = await Device.findByIdAndDelete({
+    const device = await Device.findOne({
         _id: deviceId,
         user: req.user._id
     })
@@ -41,7 +42,12 @@ export const removeDevice = asyncHandler(async(req,res)=>{
     if(!device)
         throw new ApiError(404,"Device doesnot exist")
 
-    await Device.findByIdAndDelete(deviceId)
+    try {
+        await removeMetrics(device)
+        await Device.findByIdAndDelete(deviceId)
+    } catch (error) {
+        throw new ApiError(400,"Problem in removing metrics and device")
+    }
 
     res.status(200).json(new ApiResponse(200,{},"Device Removed succesfully"))
 

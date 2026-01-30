@@ -8,7 +8,7 @@ import mongoose from 'mongoose'
 
 export const ingestMetric = asyncHandler(async(req,res)=>{
         try {
-            const {cpu,memory,disk,extras} = req.body
+            const {cpu,memory,disk,battery,extras} = req.body
         
             if(cpu === undefined)
                 throw new ApiError(400,"Cpu data is required")
@@ -18,12 +18,16 @@ export const ingestMetric = asyncHandler(async(req,res)=>{
     
             if (disk === undefined)
                     throw new ApiError(400, "Disk data is required")
+
+            if(battery === undefined)
+                throw new ApiError(400,"Battery is required")
         
             await Metric.create({
                 device: req.device._id,
                 cpu,
                 memory,
                 disk,
+                battery,
                 extras: extras || {}
             })
         
@@ -162,25 +166,13 @@ export const getMetrics = asyncHandler( async(req,res) =>{
 })
 
 
-export const removeMetrics = asyncHandler(async(req,res) =>{
-    const {deviceId} = req.params
-    
-    if(!deviceId)
-        throw new ApiError(404,"Invaild Device Id")
+export const removeMetrics = async(device) => {
 
-    const device = await Device.findOne({
-        _id: deviceId
-    })
-
-    if(!device)
-        throw new ApiError(404,"Device doesnot found")
-
-    const match = {device: new mongoose.Types.ObjectId(deviceId)}
-
-    await Metric.findOneAndDelete([
-        {$match: match}
-    ])
-
-    res.status(200).json(new ApiResponse(200,{},"Mertics were also removed from that device"))
-    
-})
+     try {
+        await Metric.deleteMany({
+            device: device._id
+        })
+     } catch (error) {
+        throw error
+     }
+}
