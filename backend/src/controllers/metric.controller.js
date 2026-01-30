@@ -160,3 +160,27 @@ export const getMetrics = asyncHandler( async(req,res) =>{
         res.status(500).json(new ApiError(500,"failed to fetch",error))
     }
 })
+
+
+export const removeMetrics = asyncHandler(async(req,res) =>{
+    const {deviceId} = req.params
+    
+    if(!deviceId)
+        throw new ApiError(404,"Invaild Device Id")
+
+    const device = await Device.findOne({
+        _id: deviceId
+    })
+
+    if(!device)
+        throw new ApiError(404,"Device doesnot found")
+
+    const match = {device: new mongoose.Types.ObjectId(deviceId)}
+
+    await Metric.findOneAndDelete([
+        {$match: match}
+    ])
+
+    res.status(200).json(new ApiResponse(200,{},"Mertics were also removed from that device"))
+    
+})
