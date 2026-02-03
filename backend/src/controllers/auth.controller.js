@@ -64,14 +64,7 @@ export const userLogin = asyncHandler(async(req,res) =>{
     user.token = token
     await user.save()
     
-    const logedINUser = await User.findById(user._id).select(
-        "-passwordHash"
-    )
-
-    if(!logedINUser)
-        throw new ApiError(500,"Unable to logIn")
-    
-    return res.status(200).json(new ApiResponse(200,logedINUser,"User log in Successfully"))
+    return res.status(200).json(new ApiResponse(200,token,"User log in Successfully"))
 })
 
 export const logOutUser = asyncHandler(async(req,res) =>{

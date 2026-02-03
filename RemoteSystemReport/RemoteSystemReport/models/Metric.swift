@@ -18,6 +18,7 @@ struct Metric: Identifiable , Codable {
     let cpu: CpuStats
     let memory: MemoryStats
     let disk:   DiskStats
+    let battery: BatteryStats
     let extras: MetricExtra?
     let time: Date
     
@@ -26,6 +27,7 @@ struct Metric: Identifiable , Codable {
         case cpu
         case memory
         case disk
+        case battery
         case extras
         case time
     }
@@ -52,6 +54,17 @@ struct DiskStats : Codable {
     
     struct DiskLast : Codable {
         let used: Int
-        let total: Double?
+        let total: Double
+    }
+}
+
+
+struct BatteryStats: Codable {
+    let last: BatteryLast
+    
+    struct BatteryLast : Codable {
+        let isCharging: Bool
+        let cycleCount: Int
+        let percent: Int
     }
 }

@@ -39,12 +39,12 @@ final class AuthViewModel: ObservableObject {
         
         let body: [String: Any] = ["email": email, "password": password]
         
-        ApiClient.shared.request(path: "/user/auth/login",method: "POST",body: body) { (result:Result<UserResponse, any Error>) in
+        ApiClient.shared.request(path: "/user/auth/login",method: "POST",body: body) { (result:Result<LoginResponse, any Error>) in
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {
                 case .success(let response):
-                    TokenStore.shared.jwt = response.data.token
+                    TokenStore.shared.jwt = response.data
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                         self.isAuthenticated = true
                     }

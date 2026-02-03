@@ -1,6 +1,7 @@
 import si, { battery } from 'systeminformation'
-import os, { hostname } from 'os'
+import os, { hostname, platform } from 'os'
 import {CONFIG} from './config.js'
+import { finished } from 'stream';
 
 export const collectMetrics = async () => {
     const payload = {
@@ -19,7 +20,8 @@ export const collectMetrics = async () => {
 
         battery: await si.battery().then(b =>({
             isCharging: b.isCharging,
-            cycleCount: b.cycleCount
+            cycleCount: b.cycleCount,
+            percent:    b.percent
         })),
 
         extras: {
@@ -41,15 +43,25 @@ export const collectMetrics = async () => {
     }
 
     if(CONFIG.features.docker){
-        const dockerContainers = await si.dockerContainers('all')
+        const dockerContainers = await si.dockerAll()
         payload.extras.docker = {
             containerCount: dockerContainers.length,
+            containerRunningCount: dockerContainers.filter(c => (c.state === 'running')).length,
             containers: dockerContainers.map(container => ({
                   id: container.id,
                   name: container.name,
                   image: container.image,
+                  platform: container.platform,
+                  memPercent: container.memPercent || 0,
+                  cpuPercent: container.cpuPercent || 0,
+                  createdAt: container.createdAt,
+                  startedAt: container.startedAt,
+                  finishedAt: container.finishedAt,
                   state: container.state,
-                  ports: container.ports
+                  ports: container.ports ? container.ports.map(p =>({
+                      public: p.PublicPort,
+                      private: p.PrivatePort
+                  })) : []
             }))
         }
     }

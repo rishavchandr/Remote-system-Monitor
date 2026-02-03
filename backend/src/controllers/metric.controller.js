@@ -71,6 +71,7 @@ export const getMetrics = asyncHandler( async(req,res) =>{
                     cpu: 1,
                     memory: 1,
                     disk: 1,
+                    battery: 1,
                     extrasArray: {$objectToArray: '$extras'}
                 }
             },
@@ -105,6 +106,8 @@ export const getMetrics = asyncHandler( async(req,res) =>{
 
                     diskLast: { $last: "$disk" },
 
+                    batteryLastStatus: {$last: "$battery"},
+
                     extraLast: { $last: "$extrasArray.v"}
                 }
             },
@@ -128,8 +131,14 @@ export const getMetrics = asyncHandler( async(req,res) =>{
              },
 
            disk: {
-                $first: {
+                $last: {
                    last: "$diskLast",
+                }
+            },
+
+            battery: {
+                $last: {
+                    last: "$batteryLastStatus"
                 }
             },
 
@@ -151,6 +160,7 @@ export const getMetrics = asyncHandler( async(req,res) =>{
                       cpu: 1,
                       memory: 1,
                       disk: 1,
+                      battery: 1,
                     extras: { $arrayToObject: "$extras" }
                  }
            },

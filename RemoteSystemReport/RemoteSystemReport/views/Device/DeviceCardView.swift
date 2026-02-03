@@ -9,7 +9,6 @@ import SwiftUI
 
 struct DeviceCardView: View {
     let device: Device
-    @State private var showTokenModel = false
     var body: some View {
         VStack(alignment: .leading , spacing: 0, content: {
             
@@ -28,29 +27,8 @@ struct DeviceCardView: View {
                  }
                 
                 Spacer()
-                
-                Button {
-                    showTokenModel = true
-                } label: {
-                    VStack(spacing: 4) {
-                        Image(systemName: "key.viewfinder")
-                            .font(.title2)
-                        Text("Device ID")
-                            .font(.system(size: 8 ,weight: .bold))
-                    }
-                    .foregroundColor(.white)
-                    .frame(width: 60,height: 60)
-                    .background {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.blue.gradient)
-                    }
-                    .shadow(
-                        color: .blue.opacity(0.3),
-                        radius: 4,x: 0, y: 2)
-                }
             }
             .padding()
-            
             Spacer()
             
             HStack{
@@ -59,7 +37,7 @@ struct DeviceCardView: View {
                 
                 if let lastSeenAt = device.lastSeenAt {
                     Text("LAST SEEN: \(lastSeenAt.formatted(.dateTime.month(.wide).day().hour().minute()))")
-                        .font(.system(size: 15,weight: .bold))
+                        .font(.system(size: 10,weight: .bold))
                         .monospaced()
                 }else{
                     Text("LAST SEEN: None")
@@ -68,6 +46,10 @@ struct DeviceCardView: View {
                 }
                 
                 Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(.secondary.opacity(0.5))
             }
             .padding(.horizontal)
             .padding(.vertical,10)
@@ -82,10 +64,6 @@ struct DeviceCardView: View {
                 .stroke(Color.primary.opacity(0.1),lineWidth: 1)
         }
         .padding(.horizontal)
-        .sheet(isPresented: $showTokenModel) {
-            DeviceTokenModal(token: device.token)
-                .presentationDetents([.fraction(0.4)])
-        }
         .preferredColorScheme(.dark)
     }
 }

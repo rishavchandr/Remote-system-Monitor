@@ -25,7 +25,8 @@ const metricSchema = new mongoose.Schema({
 
     battery: {
         isCharging: Boolean,
-        cycleCount: Number
+        cycleCount: Number,
+        percent: Number
     },
 
     //dynamic metrics

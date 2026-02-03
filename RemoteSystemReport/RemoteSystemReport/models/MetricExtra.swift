@@ -10,6 +10,7 @@ import Foundation
 struct MetricExtra: Codable {
     let network: NetworkStats?
     let temperature: TemperatureStats?
+    let docker: DockerStats?
     let agent: AgentStats
 }
 
@@ -55,5 +56,42 @@ struct AgentStats: Codable{
     
     struct AgentLast: Codable {
         let version, hostname, platform: String
+    }
+}
+
+
+struct DockerStats: Codable {
+    let last: dockerInfo
+    
+    struct dockerInfo: Codable {
+        let containerCount: Int
+        let containerRunningCount: Int
+        let containers: [Container]
+    }
+}
+
+
+struct Container: Codable , Identifiable {
+    let id: String
+    let name: String
+    let image: String
+    let state: String
+    let cpuPercent: Double
+    let memPercent: Double
+    let ports: [Port]?
+    let createdAt: String
+    let startedAt: String
+    let finishedAt: String?
+    
+    struct Port: Codable {
+        let publicPort: Int
+        let privatePort: Int
+        let type: String?
+        
+        enum CodingKeys: String, CodingKey {
+            case publicPort = "public"
+            case privatePort = "private"
+            case type
+        }
     }
 }

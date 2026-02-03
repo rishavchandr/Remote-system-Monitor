@@ -31,3 +31,7 @@ struct UserResponse: Codable {
 struct DefaultResponse: Codable {
     
 }
+
+struct LoginResponse: Codable {
+    let data: String
+}
