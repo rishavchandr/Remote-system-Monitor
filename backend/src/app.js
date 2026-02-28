@@ -16,6 +16,13 @@ app.get('/api/v1/health' , (req,res) =>{
     })
 })
 
+app.get('/' , (req,res) =>{
+    res.status(200).json({
+        status: 'ok',
+        message: "nginx working"
+    })
+})
+
 //auth 
 import authRouter from './routes/auth.routes.js'
 app.use("/api/v1/user/auth" , authRouter)
